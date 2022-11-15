@@ -111,7 +111,7 @@ export default function Home() {
             {/* {user?.email} */}
             {user ? user.email : 'Not logged in'}
           </div>
-          <button onClick={logout}>Sign out</button>
+          {user ? <button onClick={logout}>Sign out</button> : ""}
         </div>
       </div>
     </div>
