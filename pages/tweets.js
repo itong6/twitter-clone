@@ -96,7 +96,7 @@ export default function Tweets(){
 
     const [user, setUser] = useState({})
     const [tweet, setTweet] = useState('')
-    const [newTweet, showNewTweet] = useState([])
+    const [viewTweet, showNewTweet] = useState([])
 
     const handleSubmit = event =>{
         event.preventDefault()
@@ -121,7 +121,7 @@ export default function Tweets(){
             newTweets.push({...doc.data(),id:doc.id})
         });
         showNewTweet([...newTweets]);
-        console.log(newTweet);
+        console.log(viewTweet);
     }
     //end of handle tweets
 
@@ -193,7 +193,7 @@ export default function Tweets(){
             
             <PostDisplay>
                 {/* <button onClick={()=>showTweet()}>test button</button> */}
-                {newTweet.map(tweet =>{
+                {viewTweet.map(tweet =>{
                     return(
                         <PostContent key={tweet.id}>
                             <PostHeader>
