@@ -2,6 +2,7 @@ import React from "react";
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
 import { auth } from '../firebase/firebase.config';
 import { useState } from "react";
+import { useRouter }  from "next/router";
 
 export default function Home() {
   const [registerEmail, setRegisterEmail] = useState('')
@@ -10,6 +11,11 @@ export default function Home() {
   const [loginPassword, setLoginPassword] = useState('')
 
   const [user, setUser] = useState({})
+  
+  const router = useRouter();
+  const handleClick = (e) => {
+    router.push('./tweets')
+  }
 
   const register = async () => {
     try {
@@ -112,6 +118,9 @@ export default function Home() {
             {user ? user.email : 'Not logged in'}
           </div>
           {user ? <button onClick={logout}>Sign out</button> : ""}
+
+          <button onClick={()=>handleClick()}>explore tweets</button>
+          
         </div>
       </div>
     </div>
