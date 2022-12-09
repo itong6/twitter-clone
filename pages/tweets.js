@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
 import { auth, db } from '../firebase/firebase.config';
 import { useState } from "react";
-import { Firestore, getDocs } from "firebase/firestore";
+import { arrayRemove, Firestore, getDocs } from "firebase/firestore";
 import { collection, doc, addDoc, postDoc, getDoc} from "firebase/firestore";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
+import { isReactNative } from "@firebase/util";
 
 
 //components
@@ -84,7 +85,7 @@ export default function Tweets(){
   
     const router = useRouter();
     const handleClick = (e) => {
-      router.back('./')
+      router.back('/index')
     }
   
 
@@ -152,9 +153,13 @@ export default function Tweets(){
     // end of handle following
 
     // handle edit 
+    const [edit, setEdit] = useState(false)
 
     const handleEdit = async()=>{
+        router.push('/edit')
         console.log('edit post')
+
+
     }
 
     // end of handle edit
