@@ -24,12 +24,15 @@ export default function EditTweet() {
         if (docSnap.exists()) {
             console.log("Document data:", docSnap.data());
             await updateDoc(docRef, {
-                text: tweet
+                text: tweet,
+                user: auth.currentUser.email,
+                userId: auth.currentUser.email,
             });
             router.back('./')
         } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
+            router.back('./')
         }
     }
 
