@@ -1,16 +1,14 @@
 import React, { Component } from "react";
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
 import { auth, db } from '../firebase/firebase.config';
 import { useState } from "react";
-import { Firestore, getDocs } from "firebase/firestore";
-import { collection, doc, addDoc, postDoc, getDoc} from "firebase/firestore";
+import { collection, doc, addDoc, getDocs, postDoc, getDoc, deleteField, deleteDoc, Firestore, updateDoc} from "firebase/firestore";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 
 
 //components
-    const PostContent = styled.div`
+    export const PostContent = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -23,7 +21,7 @@ import styled from "styled-components";
     margin: 20px 20px;
 `;
 
-    const PostBody = styled.div`
+export const PostBody = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -33,20 +31,20 @@ import styled from "styled-components";
     border-radius: 10px;
 `;
 
-    const UserName = styled.div`
+export const UserName = styled.div`
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 10px;
 `;
 
-    const PostHeader = styled.div`
+export const PostHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
 `;
 
-    const PostDisplay = styled.div`
+export const PostDisplay = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -54,7 +52,7 @@ import styled from "styled-components";
     margin: auto;
 `;
 
-const DefaultButton = styled.button`
+export const DefaultButton = styled.button`
     background-color: #1da1f2;
     border: none;
     color: black;
@@ -68,7 +66,7 @@ const DefaultButton = styled.button`
     border-radius: 5px;
 `;
 
-const PageHeader = styled.div`
+export const PageHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -129,21 +127,19 @@ export default function Tweets(){
 
     const [following, setFollowing] = useState(false)
     
-    const handleFollow = async()=>{
-        const postDoc = await addDoc(collection(db, "follow"),{
-            follow: follow,
-            user: auth.currentUser.email,
-            userId: auth.currentUser.uid
+    const handleFollow = async(user)=>{
+    await addDoc(collection(db, "followers"),{
+            follow: user,
+            userId: auth.currentUser.email,
         });
         setFollowing(true)
         console.log('followed')
     }
 
-    const handleUnfollow = async()=>{
-        const postDoc = await addDoc(collection(db, "unfollow"),{
-            unfollow: follow,
-            user: auth.currentUser.email,
-            userId: auth.currentUser.uid
+    const handleUnfollow = async () => {
+    await addDoc(collection(db, "followers"),{
+            unfollow: user,
+            userId: auth.currentUser.email,
         });
         setFollowing(false)
         console.log('unfollowed')
@@ -153,15 +149,17 @@ export default function Tweets(){
 
     // handle edit 
 
-    const handleEdit = async()=>{
+    const handleEdit = async(id)=>{
         console.log('edit post')
+        //push to edit page
+        router.push(`./${id}`)
     }
 
     // end of handle edit
 
     // handle report tweet
 
-    const handleReport = async()=>{
+    const handleReport = async(id)=>{
         console.log('report post')
     }
 
@@ -201,10 +199,10 @@ export default function Tweets(){
                                 {tweet.user}
                             </UserName>
                             <div>
-                                {following ? <DefaultButton onClick={()=>handleUnfollow()}>Unfollow</DefaultButton> : <DefaultButton onClick={()=>handleFollow()}>Follow</DefaultButton>}
+                                {following ? <DefaultButton onClick={(e)=>handleUnfollow(e, tweet.user)}>Unfollow</DefaultButton> : <DefaultButton onClick={()=>handleFollow(tweet.user)}>Follow</DefaultButton>}
                                 {/* <DefaultButton onClick={()=> handleFollow()}>{followText}</DefaultButton> */}
-                                <DefaultButton onClick={()=> handleEdit()}>Edit</DefaultButton>
-                                <DefaultButton onClick={()=> handleReport()}>Report</DefaultButton>
+                                <DefaultButton onClick={()=> handleEdit(tweet.id)}>Edit</DefaultButton>
+                                <DefaultButton onClick={()=> handleReport(tweet.id)}>Report</DefaultButton>
                             </div>
                             </PostHeader>
                             <PostBody> {tweet.text}</PostBody>
